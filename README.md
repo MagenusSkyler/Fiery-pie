@@ -1,2 +1,2 @@
 # Fiery-pie
- Programming language written in python.
+ Interpreter for basic like language written in python3.
