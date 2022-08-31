@@ -1,2 +1,2 @@
 # Fiery-pie
- Basic programming language in python.
+ Programming language written in python.
