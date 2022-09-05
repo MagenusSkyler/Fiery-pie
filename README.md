@@ -1,4 +1,4 @@
 # Pandabear
- Interpreter for basic like language written in python3.
+ Interpreter for 'BASIC' like language written in python3.
 
-Incomplete ...
+- Incomplete ...

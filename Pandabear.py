@@ -126,31 +126,31 @@ class Position:
 #==========#   TOKENS   #==========#
 ####################################
 
-TT_INT				= 'INT'
-TT_FLOAT    	= 'FLOAT'
-TT_STRING			= 'STRING'
-TT_IDENTIFIER	= 'IDENTIFIER'
-TT_KEYWORD		= 'KEYWORD'
-TT_PLUS     	= 'PLUS'
-TT_MINUS    	= 'MINUS'
-TT_MUL      	= 'MUL'
-TT_DIV      	= 'DIV'
-TT_POW				= 'POW'
-TT_EQ					= 'EQ'
-TT_LPAREN   	= 'LPAREN'
-TT_RPAREN   	= 'RPAREN'
-TT_LSQUARE    = 'LSQUARE'
-TT_RSQUARE    = 'RSQUARE'
-TT_EE					= 'EE'
-TT_NE					= 'NE'
-TT_LT					= 'LT'
-TT_GT					= 'GT'
-TT_LTE				= 'LTE'
-TT_GTE				= 'GTE'
-TT_COMMA			= 'COMMA'
-TT_ARROW			= 'ARROW'
-TT_NEWLINE		= 'NEWLINE'
-TT_EOF				= 'EOF'
+TT_INT        = 'INT'         # INTEGER             #
+TT_FLOAT      = 'FLOAT'       # FLOAT               #
+TT_STRING     = 'STRING'      # STRING              #
+TT_IDENTIFIER = 'IDENTIFIER'  # IDENTIFIER          #
+TT_KEYWORD    = 'KEYWORD'     # KEYWORD             #
+TT_PLUS       = 'PLUS'        # PLUS                #
+TT_MINUS      = 'MINUS'       # MINUS               #         
+TT_MUL        = 'MUL'         # MULTIPLY            #
+TT_DIV        = 'DIV'         # DIVIDE              #
+TT_POW        = 'POW'         # POWER               #
+TT_EQU        = 'EQU'         # EQUAL               #
+TT_LPAREN     = 'LPAREN'      # LEFT PARENTHESIS    #
+TT_RPAREN     = 'RPAREN'      # RIGHT PARENTHESIS   #
+TT_LSQUARE    = 'LSQUARE'     # LEFT SQUARE         #
+TT_RSQUARE    = 'RSQUARE'     # RIGHT SQUARE        #
+TT_DEQ        = 'DEQ'         # DOUBLE EQUAL        #
+TT_NEQ        = 'NEQ'         # NOT EQUAL           #
+TT_LSS        = 'LSS'         # LESS THEN           #
+TT_GTR        = 'GTR'         # GREATER THEN        #
+TT_LEQ        = 'LEQ'         # LESS OR EQUAL TO    #
+TT_GEQ        = 'GEQ'         # GREATER OR EQUAL TO #
+TT_COMMA      = 'COMMA'       # COMMA               #  
+TT_ARROW      = 'ARROW'       # ARROW               #
+TT_NEWLINE    = 'NEWLINE'     # NEWLINE             #
+TT_EOF        = 'EOF'         # END OF FILE         #
 
 KEYWORDS = [
   'VAR',
@@ -343,41 +343,41 @@ class Lexer:
 
     if self.current_char == '=':
       self.advance()
-      return Token(TT_NE, pos_start=pos_start, pos_end=self.pos), None
+      return Token(TT_NEQ, pos_start=pos_start, pos_end=self.pos), None
 
     self.advance()
     return None, ExpectedCharError(pos_start, self.pos, "'=' (after '!')")
   
   def make_equals(self):
-    tok_type = TT_EQ
+    tok_type = TT_EQU
     pos_start = self.pos.copy()
     self.advance()
 
     if self.current_char == '=':
       self.advance()
-      tok_type = TT_EE
+      tok_type = TT_DEQ
 
     return Token(tok_type, pos_start=pos_start, pos_end=self.pos)
 
   def make_less_than(self):
-    tok_type = TT_LT
+    tok_type = TT_LSS
     pos_start = self.pos.copy()
     self.advance()
 
     if self.current_char == '=':
       self.advance()
-      tok_type = TT_LTE
+      tok_type = TT_LEQ
 
     return Token(tok_type, pos_start=pos_start, pos_end=self.pos)
 
   def make_greater_than(self):
-    tok_type = TT_GT
+    tok_type = TT_GTR
     pos_start = self.pos.copy()
     self.advance()
 
     if self.current_char == '=':
       self.advance()
-      tok_type = TT_GTE
+      tok_type = TT_GEQ
 
     return Token(tok_type, pos_start=pos_start, pos_end=self.pos)
 
@@ -690,7 +690,7 @@ class Parser:
       res.register_advancement()
       self.advance()
 
-      if self.current_tok.type != TT_EQ:
+      if self.current_tok.type != TT_EQU:
         return res.failure(InvalidSyntaxError(
           self.current_tok.pos_start, self.current_tok.pos_end,
           "Expected '='"
@@ -724,7 +724,7 @@ class Parser:
       if res.error: return res
       return res.success(UnaryOpNode(op_tok, node))
     
-    node = res.register(self.bin_op(self.arith_expr, (TT_EE, TT_NE, TT_LT, TT_GT, TT_LTE, TT_GTE)))
+    node = res.register(self.bin_op(self.arith_expr, (TT_DEQ, TT_NEQ, TT_LSS, TT_GTR, TT_LEQ, TT_GEQ)))
     
     if res.error:
       return res.failure(InvalidSyntaxError(
@@ -1037,7 +1037,7 @@ class Parser:
     res.register_advancement()
     self.advance()
 
-    if self.current_tok.type != TT_EQ:
+    if self.current_tok.type != TT_EQU:
       return res.failure(InvalidSyntaxError(
         self.current_tok.pos_start, self.current_tok.pos_end,
         f"Expected '='"
@@ -1895,8 +1895,8 @@ BuiltInFunction.is_function = BuiltInFunction("is_function")
 BuiltInFunction.append      = BuiltInFunction("append")
 BuiltInFunction.pop         = BuiltInFunction("pop")
 BuiltInFunction.extend      = BuiltInFunction("extend")
-BuiltInFunction.len					= BuiltInFunction("len")
-BuiltInFunction.run					= BuiltInFunction("run")
+BuiltInFunction.len         = BuiltInFunction("len")
+BuiltInFunction.run         = BuiltInFunction("run")
 
 #####################################
 #==========#   CONTEXT   #==========#
@@ -2008,17 +2008,17 @@ class Interpreter:
       result, error = left.dived_by(right)
     elif node.op_tok.type == TT_POW:
       result, error = left.powed_by(right)
-    elif node.op_tok.type == TT_EE:
+    elif node.op_tok.type == TT_DEQ:
       result, error = left.get_comparison_eq(right)
-    elif node.op_tok.type == TT_NE:
+    elif node.op_tok.type == TT_NEQ:
       result, error = left.get_comparison_ne(right)
-    elif node.op_tok.type == TT_LT:
+    elif node.op_tok.type == TT_LSS:
       result, error = left.get_comparison_lt(right)
-    elif node.op_tok.type == TT_GT:
+    elif node.op_tok.type == TT_GTR:
       result, error = left.get_comparison_gt(right)
-    elif node.op_tok.type == TT_LTE:
+    elif node.op_tok.type == TT_LEQ:
       result, error = left.get_comparison_lte(right)
-    elif node.op_tok.type == TT_GTE:
+    elif node.op_tok.type == TT_GEQ:
       result, error = left.get_comparison_gte(right)
     elif node.op_tok.matches(TT_KEYWORD, 'AND'):
       result, error = left.anded_by(right)
