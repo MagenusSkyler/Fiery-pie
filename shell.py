@@ -11,7 +11,7 @@ print("Type [help] or [/?] to get help.", end="\n\n")
 # MAIN LOOP
 while True:
     text = input("Pandabear >>> ")  # TAKE COMMAND INPUT
-    
+
     # COMMAND INPUT CHECK FROM A - Z IN ASCENDING ORDER
     if text == "cls" or text == "clear":
         if os.name == "nt":
@@ -24,8 +24,11 @@ while True:
         if os.name == "nt":
             os.system("cls && cmd")
         else:
-            print("Cannot run 'cmd' unless running OS is Windows")
-            continue
+            try:
+                os.system('wine cmd')
+            except:
+                print("Cannot run 'cmd' unless running OS is Windows")
+                continue
     elif text == "exit":
         break
     elif text == "help" or text == "/?":
@@ -36,16 +39,26 @@ while True:
         print('help, /?       Provides Help information.')
         print('version        Shows Pandabear version.')
         print('\nBuilt In Function: \n------------------')
-        print('CLEAR()        Clears the screen and shows output.')
-        print('CLS()          Clears the screen and shows output.')
-        print('Run()          Runs specified file [e.g. Run("example.pb")]')
+        print('Clear()        Clears the screen and shows command output, "0".')
+        print('Cls()          Clears the screen and shows command output, "0".')
+        print('Input()        Takes user input and does not take any arguments.')
+        print('Input_int()    Takes only "Int" input from user & does not take any args.')
+        print('Is_int()       Returns "1" if the specified data type is "Integer".')
+        print('               [e.g. Is_int(10), Is_int(VAR_name), Is_int("Hello!")]')
+        print('Is_str()       Returns "1" if the specified data type is "String".')
+        print('               [e.g. Is_str(10), Is_str(VAR_name), Is_str("Hello!")]]')
+        print('Math_pi        Returns default "math.pi" value, this is built in variable.')
+        print('Print()        Prints "Str", "Var" & calculates mathematical expression.')
+        print('               [e.g. Print("Hello!"), Print((5+5)*2), Print(VAR_name)]')
+        print('Print_ret()    Returns print value as "String" in double quotes.')
+        print('Run()          Runs specified file. [e.g. Run("example.pb")]')
         print("               Note: Do not use single quotes ('').")
         print(end="\n")     # ADD 1 LINE GAP AT THE END
         continue
     elif text == "version":
         print("Pandabear 1.0")
         continue
-    
+
     # CALL MAIN INTERPRETER FUNCTIONS
     if text.strip() == "": continue
     result, error = pbear.run('<stdin>', text)
