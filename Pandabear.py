@@ -2,7 +2,6 @@
 #==========#   IMPORTS   #==========#
 #####################################
 
-import random
 import string
 import os
 import math
@@ -2202,8 +2201,8 @@ global_symbol_table.set("Clear", BuiltInFunction.clear)
 global_symbol_table.set("Cls", BuiltInFunction.clear)
 global_symbol_table.set("Is_int", BuiltInFunction.is_number)
 global_symbol_table.set("Is_str", BuiltInFunction.is_string)
-global_symbol_table.set("IS_LIST", BuiltInFunction.is_list)
-global_symbol_table.set("IS_FUNC", BuiltInFunction.is_function)
+global_symbol_table.set("Is_list", BuiltInFunction.is_list)
+global_symbol_table.set("Is_func", BuiltInFunction.is_function)
 global_symbol_table.set("APPEND", BuiltInFunction.append)
 global_symbol_table.set("POP", BuiltInFunction.pop)
 global_symbol_table.set("EXTEND", BuiltInFunction.extend)
