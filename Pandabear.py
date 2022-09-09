@@ -2203,10 +2203,10 @@ global_symbol_table.set("Is_int", BuiltInFunction.is_number)
 global_symbol_table.set("Is_str", BuiltInFunction.is_string)
 global_symbol_table.set("Is_list", BuiltInFunction.is_list)
 global_symbol_table.set("Is_func", BuiltInFunction.is_function)
-global_symbol_table.set("APPEND", BuiltInFunction.append)
-global_symbol_table.set("POP", BuiltInFunction.pop)
-global_symbol_table.set("EXTEND", BuiltInFunction.extend)
-global_symbol_table.set("LEN", BuiltInFunction.len)
+global_symbol_table.set("Append", BuiltInFunction.append)
+global_symbol_table.set("Pop", BuiltInFunction.pop)
+global_symbol_table.set("Extend", BuiltInFunction.extend)
+global_symbol_table.set("Len", BuiltInFunction.len)
 global_symbol_table.set("Run", BuiltInFunction.run)
 
 def run(fn, text):
@@ -2228,4 +2228,100 @@ def run(fn, text):
 
   return result.value, result.error
 
+###################################
+#==========#   SHELL   #==========#
+###################################
 
+# ON START
+if os.name == "nt":
+    os.system("CLS && TITLE Pandabear")
+print("Pandabear Interpreter [version - 1.0]", end="\n")
+print("Type [help] or [/?] to get help.", end="\n\n")
+
+# MAIN LOOP
+while True:
+  text = input("Pandabear >>> ")  # TAKE COMMAND INPUT
+
+  # COMMAND INPUT CHECK FROM A - Z IN ASCENDING ORDER
+  if text == "cls" or text == "clear":
+    if os.name == "nt":
+      os.system("cls")
+      continue
+    else:
+      os.system("clear")
+      continue
+  elif text == "cmd":
+    if os.name == "nt":
+      os.system("cls && cmd")
+    else:
+      try:
+        os.system('wine cmd')
+      except:
+        print("Cannot run 'cmd' unless running OS is Windows")
+        continue
+  elif text == "exit":
+    break
+  elif text == "help" or text == "/?":
+    print('''
+Pandabear Shell Commands & Built In Functions: \n----------------------------------------------
+Append()       Adds item at the end of list.
+               [Usage: Set list = [1, 2, 3, 4] # Making a list
+               Append(list, 5) # adds 5 at the end of list]
+clear          Clears the screen (Does not take any args).
+cls            Clears the screen (Does not take any args).
+cmd            Opens Windows command prompt interpreter (Windows only).
+               Note: Will try to open wine cmd if installed on Linux OSs.
+Clear()        Clears the screen and shows command output, "0".
+Cls()          Clears the screen and shows command output, "0".
+Extend()       Appends item from second list to first specified list.
+               [Usage: Set a = [1, 2]; Set b = [3, 4] # Making 2 lists
+               Extend(a, b) # Now a = [1, 2, 3, 4] and b is unchanged]
+help, /?       Provides Help information.
+Input()        Takes user input and does not take any arguments.
+Input_int()    Takes only "Int" input from user & does not take any args.
+               Note: Will prompt user to enter again if input was not "Int"
+Is_int()       Returns "1" if the specified data type is "Integer".
+               [Usage: Is_int(10), Is_int(VAR_name), Is_int("Hello!")]
+Is_str()       Returns "1" if the specified data type is "String".
+               [Usage: Is_str(10), Is_str(VAR_name), Is_str("Hello!")]
+Is_list        Returns "1" if the specified variable type is "list".
+               [Usage: Set l = [1, 2, 3, 4] # Making a list named "l"
+               Is_list(l) # This will return "1" (1 = True, 0 = False)]
+Is_func        Returns "1" if a function is specified else returns "0".
+               [Usage: Func main(); Print("Hello!") End # Making a Function
+               Is_func(main) # Will return "1" as "main" is a function]
+Len()          Returns the number of items in specified list.
+               [Usage: Set list = ["a", "b"] # Making a list named "list"
+               Len(list) # This Will Return length of the list]
+               Note: It will return error if specified var is not a list.
+Math_pi        Returns default "math.pi" value, this is built in variable.
+Pop()          Removes specified item from list.
+               [Usage: Set list = [1, 2, 3, 4] # Making a list
+               Pop(list, 0) # Removes first item (1) from  the list]
+Print()        Prints "Str", "Var" & calculates mathematical expression.
+               [Usage: Print("Hello!"), Print((5+5)*2), Print(VAR_name)]
+Print_ret()    Returns print value as "String" in double quotes.
+Run()          Runs specified file. [Usage: Run("example.pb")]
+               Note: Using single quotes (') will show error.
+version        Shows Pandabear's interpreter version.
+    ''')
+    continue
+  elif text == "version":
+    print("Pandabear 1.0")
+    continue
+    
+  elif text == "pandabear" or text == "Pandabear":
+    print("Pandabear is a Interpreter for language like 'BASIC' written in Python3.")
+    continue
+
+  # CALL MAIN INTERPRETER FUNCTIONS
+  if text.strip() == "": continue
+  result, error = run('<stdin>', text)
+
+  if error:
+    print(error.as_string())
+  elif result:
+    if len(result.elements) == 1:
+      print(repr(result.elements[0]))
+    else:
+      print(repr(result))
