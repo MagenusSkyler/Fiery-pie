@@ -158,7 +158,7 @@ KEYWORDS = [
   'Or',
   'Not',
   'If',
-  'Elif',
+  'Elsif',
   'Else',
   'For',
   'To',
@@ -598,7 +598,7 @@ class Parser:
     if not res.error and self.current_tok.type != TT_EOF:
       return res.failure(InvalidSyntaxError(
         self.current_tok.pos_start, self.current_tok.pos_end,
-        "Token cannot appear after previous tokens"
+        "Incorrect usage of tokens or capitalization mistakes has been made"
       ))
     return res
 
@@ -914,7 +914,7 @@ class Parser:
     return res.success(IfNode(cases, else_case))
 
   def if_expr_b(self):
-    return self.if_expr_cases('Elif')
+    return self.if_expr_cases('Elsif')
     
   def if_expr_c(self):
     res = ParseResult()
@@ -951,7 +951,7 @@ class Parser:
     res = ParseResult()
     cases, else_case = [], None
 
-    if self.current_tok.matches(TT_KEYWORD, 'Elif'):
+    if self.current_tok.matches(TT_KEYWORD, 'Elsif'):
       all_cases = res.register(self.if_expr_b())
       if res.error: return res
       cases, else_case = all_cases
@@ -2190,8 +2190,8 @@ class Interpreter:
 
 global_symbol_table = SymbolTable()
 global_symbol_table.set("NULL", Number.null)
-global_symbol_table.set("FALSE", Number.false)
-global_symbol_table.set("TRUE", Number.true)
+global_symbol_table.set("False", Number.false)
+global_symbol_table.set("True", Number.true)
 global_symbol_table.set("Math_pi", Number.math_PI)
 global_symbol_table.set("Print", BuiltInFunction.print)
 global_symbol_table.set("Print_ret", BuiltInFunction.print_ret)
@@ -2284,16 +2284,17 @@ Is_int()       Returns "1" if the specified data type is "Integer".
                [Usage: Is_int(10), Is_int(VAR_name), Is_int("Hello!")]
 Is_str()       Returns "1" if the specified data type is "String".
                [Usage: Is_str(10), Is_str(VAR_name), Is_str("Hello!")]
-Is_list        Returns "1" if the specified variable type is "list".
+Is_list()      Returns "1" if the specified variable type is "list".
                [Usage: Set l = [1, 2, 3, 4] # Making a list named "l"
                Is_list(l) # This will return "1" (1 = True, 0 = False)]
-Is_func        Returns "1" if a function is specified else returns "0".
+Is_func()      Returns "1" if a function is specified else returns "0".
                [Usage: Func main(); Print("Hello!") End # Making a Function
                Is_func(main) # Will return "1" as "main" is a function]
 Len()          Returns the number of items in specified list.
                [Usage: Set list = ["a", "b"] # Making a list named "list"
                Len(list) # This Will Return length of the list]
                Note: It will return error if specified var is not a list.
+doc help       Provides full documentation, "//?" can also be used.
 Math_pi        Returns default "math.pi" value, this is built in variable.
 Pop()          Removes specified item from list.
                [Usage: Set list = [1, 2, 3, 4] # Making a list
@@ -2304,6 +2305,278 @@ Print_ret()    Returns print value as "String" in double quotes.
 Run()          Runs specified file. [Usage: Run("example.pb")]
                Note: Using single quotes (') will show error.
 version        Shows Pandabear's interpreter version.
+    ''')
+    continue
+  elif text == "doc help" or text == "//?":
+    if os.name == "nt":
+      os.system("cls")
+    else:
+      os.system("clear")
+    print('''
+#===================================================================#
+      Interpreter for language like `BASIC` written in python3.
+         Source : https://github.com/MagenusSkyler/Pandabear
+#===================================================================#
+
+>> Syntax are similar to python
+#===================================================================#
+| # Only works with double quotes (")                               |
+| Print("Hello World!")  # :Hello World!                            |
+| Print((5+5)*2+1)       # :21                                      |
+| #-------------------------------------                            |
+| Set a = "Hello World!"                                            |
+| Print(a)               # :Hello World!                            |
+#===================================================================#
+
+>> Run scripts using `Run()`
+#===================================================================#
+| # Note: Using single quotes (') will show error.                  |
+| Run("example.pb")                                                 |
+#===================================================================#
+
+>> You can get print return by using `Print_ret()`
+#===================================================================#
+| Print_ret("Hi there.") # :"Hi there."                             |
+#===================================================================#
+
+>> Comments can be added using `#`
+#===================================================================#
+| # This is a Comment                                               |
+| Print("Look up!")      # :Look up!                                |
+#===================================================================#
+
+>> Variables are created using keyword `Set`
+#===================================================================#
+| Set var = 10           # :10; 0                                   |
+#===================================================================#
+
+>> Multiple variables can be declared in one line by using `;`
+#===================================================================#
+| Set var1 = 5; Set var2 = 10                                       |
+#===================================================================#
+
+>> There is a built in variable named `Math_pi`
+#===================================================================#
+| Print(Math_pi) # Returns "3.141592653589793"                      |
+| # Just entering "Math_pi" also works                              |
+| Math_pi                                                           |
+#===================================================================#
+
+>> Lists can be created using the same keyword (`Set`)
+#===================================================================#
+| Set list = ["a", "b"]; Set list2 = ["c", 1, 2]                    |
+#===================================================================#
+
+>> Items can be added to list using `Append()`
+#===================================================================#
+| Set list = [1, 2, 3, 4]                                           |
+| Append(list, 5)   # :[1, 2, 3, 4, 5]                              |
+#===================================================================#
+
+>> `pop()` can be used to remove items from list
+#===================================================================#
+| Set list = [1, 2, 3, 4]                                           |
+| Pop(list, 0)  # This will remove '1' from the list                |
+| #--Example 2--------------------------------------                |
+| Set list = [1, 2, 3, 4]                                           |
+| Pop(list, -1) # This will remove '4' from the list                |
+#===================================================================#
+
+>> List can be combined using `Extend()`
+#===================================================================#
+| Set a = [1, 2, 3]                                                 |
+| Set b = [4, 5, 6]                                                 |
+| Extend(a, b)     # :[1, 2, 3, 4, 5, 6]                            |
+| # Now a is = [1, 2, 3, 4, 5, 6] but b is unchanged.               |
+#===================================================================#
+
+>> To check the length of a list `Len()` can be used
+#===================================================================#
+| Set list = [1, 2, 3, 4, 5]                                        |
+| Len(list)        # :5                                             |
+#===================================================================#
+
+>> User input can be taken using `Input()`
+#===================================================================#
+| # Takes user input and does not take any arguments                |
+| Set a = Input()                                                   |
+| Print(a)         # Print the input                                |
+#===================================================================#
+
+>> Integer input can be taken using `Input_int()`
+#===================================================================#
+| # This will prompt user to enter again if input was not "Int"     |
+| Set b = Input_int()                                               |
+| Print(b)         # Print the int input                            |
+#===================================================================#
+
+>> Screen can be cleared using `Clear()` & `Cls()`
+#===================================================================#
+| Clear()                                                           |
+| Cls()                                                             |
+#===================================================================#
+
+>> There are ways to check the object type using different keywords
+#===================================================================#
+| Is_int(10)      # Variables can be used as args                   |      
+| Is_str("Hi!")   # returns "0" if False                            |
+| #----------------------------------------------                   |
+| Set list = [1, 2, 3]                                              |
+| Is_list(list)   # Returns "1" if True                             |
+| #----------------------------------------------                   |
+| Func main() -> Print("Hello World!")                              |
+| Is_func(main)   # Returns "1" if True else returns "0"            |
+#===================================================================#
+
+>> If..Else statement (`If`,`Elsif`,`Else`,`Then`,`And`,`Or`,`End`)
+##### If statement multiline:
+#===================================================================#
+| Set a = 10; Set b = 10                                            |
+| If a == b Then                                                    |
+|   Print("a and b are equal")                                      |
+|   Print("Goodbye!")                                               |
+| End                                                               |
+#===================================================================#
+
+##### If statement single line:
+#===================================================================#
+| Set a = 10; Set b = 10                                            |
+| If a == b Then Print("a & b are equal") And Print("Goodbye!")     |
+| # "End" should not be used in this case                           |
+#===================================================================#
+
+##### Elsif statement multiline:
+#===================================================================#
+| Set a = 10; Set b = 8                                             |
+| If a == b Then                                                    |
+|   Print("a & b are equal")                                        |
+| Elsif a > b Then                                                  |
+|   Print("a is > b")                                               |
+| End                                                               |
+#===================================================================#
+
+##### Elsif statement single line:
+#===================================================================#
+| Set a = 10; Set b = 8                                             |
+| If a == b Then Print("a=b") Elsif a > b Then Print("a is > b")    |
+#===================================================================#
+
+##### Else statement multiline:
+#===================================================================#
+| Set a = 10; Set b = 12                                            |
+| If a == b Then                                                    |
+|   Print("a = b")                                                  |
+| Elsif a > b Then                                                  |
+|   Print("a > b")                                                  |
+| Else                                                              |
+|   Print("a < b")                                                  |
+| End                                                               |
+#===================================================================#
+
+##### Elsif statement single line:
+#===================================================================#
+| Set a = 10; Set b = 12                                            |
+| If a == b Then Print("a = b") Else Print("a < b")                 |
+| # Elsif can be used in the middle too                             |
+#===================================================================#
+
+##### Keywords `And` and `Or`
+#===================================================================#
+| # Use of "And" Keyword                                            |
+| Set a = 10; Set b = 10; Set c = 12                                |
+| If a == 10 And a == b Then Print("Correct")                       |
+|                                                                   |
+| # Use "Or" Keyword                                                |
+| If a == c Or a == b Then Print("Correct")                         |
+| # Elsif and Else can be used too                                  |
+#===================================================================#
+
+##### single line summary:
+#===================================================================#
+| If <case> Then <task> Elsif <case> Then <task> Else <task>        |
+#===================================================================#
+
+##### multiline line summary:
+#===================================================================#
+| If <case> Then                                                    |
+|   <task>                                                          |
+| Elsif <case> Then                                                 |
+|   <task>                                                          |
+| Else                                                              |
+|   <task>                                                          |
+| End                                                               |
+#===================================================================#
+
+>> Functions are created using keyword `Func`
+##### single line function uses `->` as start
+#===================================================================#
+| Func main() -> Print("Hello") And Print("World")                  |
+| main() # calling function by its name                             |
+#===================================================================#
+
+##### multiline line functions has to end with keyword `End`
+#===================================================================#
+| Func main()                                                       |
+|   Print("Hello")                                                  |
+|   Print("World")                                                  |
+| End                                                               |
+| main()                                                            |
+#===================================================================#
+
+>> Loops (`While`, `For`)
+##### While loops example:
+#===================================================================#
+| # Multiline "While loop" example                                  |
+| Set i = 0                                                         |
+| While i < 10000 Then                                              |
+|   Set i = i + 1                                                   |
+|   End                                                             |
+#===================================================================#
+#===================================================================#
+| # Single line "While loop" example                                |
+| Set i = 0                                                         |
+| While i < 10000 Then Set i = i + 1                                |
+#===================================================================#
+#===================================================================#
+| # This loop will not stop until exited                            |
+| While True Then                                                   |
+|   Continue                                                        |
+#===================================================================#
+#===================================================================#
+| # This is a more practical use                                    |
+| Set a = 0                                                         |
+| While True Then                                                   |
+|   If a == 10 Then                                                 |
+|     Print("'a' is equal to '10'")                                 |
+|     Break                                                         |
+|   Else Set a = a + 1                                              |
+| End                                                               |
+#===================================================================#
+
+##### For loops:
+#===================================================================#
+| Set res = 1                                                       |
+| For i = 1 To 6 Then Set res = res * i                             |
+#===================================================================#
+#===================================================================#
+| Set res = 1                                                       |
+| For i = 1 To 6 Then                                               |
+|   Set res = res * i                                               |
+| End                                                               |
+| res # This will print the res                                     |
+#===================================================================#
+#===================================================================#
+| Set res = 120                                                     |
+| For i = 5 To 0 Step -1 Then Set res = res * i                     |
+| Print(res)                                                        |
+#===================================================================#
+#===================================================================#
+| Set res = 120                                                     |
+| For i = 5 To 0 Step -1 Then                                       |
+|   Set res = res * i                                               |
+| End                                                               |
+| Print(res)                                                        |
+#===================================================================#
     ''')
     continue
   elif text == "version":
@@ -2325,3 +2598,6 @@ version        Shows Pandabear's interpreter version.
       print(repr(result.elements[0]))
     else:
       print(repr(result))
+
+
+
