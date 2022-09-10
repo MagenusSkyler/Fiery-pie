@@ -11,7 +11,8 @@ Install this project with git
 ```bash
   git clone https://github.com/MagenusSkyler/Pandabear.git
 ```
-or click on this [link](https://github.com/MagenusSkyler/Pandabear/archive/refs/heads/main.zip) to download zip
+Click on this [link](https://github.com/MagenusSkyler/Pandabear/archive/refs/heads/main.zip) to download full project zipped
+or click on this [link](https://github.com/MagenusSkyler/Pandabear/raw/main/bin/Pandabear.zip) to get Pandabear.exe (zipped).
 
 ## Usage/Examples
 
